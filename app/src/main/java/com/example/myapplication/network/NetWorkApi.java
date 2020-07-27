@@ -1,7 +1,6 @@
 package com.example.myapplication.network;
 
 import android.annotation.SuppressLint;
-import android.os.SystemClock;
 
 import com.example.myapplication.network.base.INetworkRequiredInfo;
 import com.example.myapplication.network.interceptor.CommonRequestInterceptor;
@@ -9,11 +8,7 @@ import com.example.myapplication.network.interceptor.CommonResponseInterceptor;
 import com.example.myapplication.utils.TecentUtil;
 
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
-import io.reactivex.Observable;
-import io.reactivex.ObservableTransformer;
-import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
@@ -23,7 +18,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
-import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -106,6 +100,22 @@ public class NetWorkApi {
             @Override
             public void accept(NewsChannelsBean newsChannelsBean) throws Exception {
                 callback.onSuccess(newsChannelsBean);
+            }
+        }, new Consumer<Throwable>() {
+            @Override
+            public void accept(Throwable throwable) throws Exception {
+                callback.onError(throwable.toString());
+            }
+        });
+    }
+
+    @SuppressLint("CheckResult")
+    public void getNewsList(String channelId, String channelName, int page, final CommonCallback<NewsListBean> callback) {
+        NewsApiInterface newsApiInterface = retrofit.create(NewsApiInterface.class);
+        newsApiInterface.getNewsList(channelId, channelName, String.valueOf(page)).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<NewsListBean>() {
+            @Override
+            public void accept(NewsListBean newsListBean) throws Exception {
+                callback.onSuccess(newsListBean);
             }
         }, new Consumer<Throwable>() {
             @Override

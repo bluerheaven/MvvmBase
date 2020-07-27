@@ -13,6 +13,7 @@ import com.example.myapplication.loadsir.LoadingCallback
 import com.example.myapplication.network.CommonCallback
 import com.example.myapplication.network.NetWorkApi
 import com.example.myapplication.network.NewsChannelsBean
+import com.example.myapplication.views.news.NewsListFragment
 import com.google.android.material.tabs.TabLayout
 import com.kingja.loadsir.core.LoadService
 import com.kingja.loadsir.core.LoadSir
