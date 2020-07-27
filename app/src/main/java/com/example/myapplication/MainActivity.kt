@@ -7,28 +7,44 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter
 import com.example.myapplication.databinding.ActivityMainBinding
+import com.example.myapplication.loadsir.EmptyCallback
+import com.example.myapplication.loadsir.ErrorCallback
+import com.example.myapplication.loadsir.LoadingCallback
+import com.example.myapplication.network.CommonCallback
+import com.example.myapplication.network.NetWorkApi
+import com.example.myapplication.network.NewsChannelsBean
+import com.google.android.material.tabs.TabLayout
+import com.kingja.loadsir.core.LoadService
+import com.kingja.loadsir.core.LoadSir
+
 
 class MainActivity : AppCompatActivity() {
     private val tag = "MainActivity"
     private lateinit var dataBinding: ActivityMainBinding
+    private lateinit var loadSir: LoadService<Any>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         dataBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-
-        initViews()
-
+        loadSir = LoadSir.getDefault().register(this) {
+            TODO("Not yet implemented")
+        }
+        initData()
     }
 
-    private fun initViews() {
-        val strArrays = listOf("tab1", "tab2", "tab3", "tab4")
+    private fun loadViews(channelsBean: NewsChannelsBean) {
+        val size = channelsBean.showapiResBody.channelList.size
+        if (channelsBean.showapiResBody.channelList.size == 0) {
+            loadSir.showCallback(EmptyCallback::class.java)
+            return
+        }
+
         val fragments = mutableListOf<Fragment>()
-        for (str in strArrays) {
-            Log.e(tag, "add new fragment, strs = $str")
+        for (str in 0 until size) {
             fragments.add(NewsListFragment.newInstance())
         }
-        dataBinding.viewPager.offscreenPageLimit = strArrays.size
+        dataBinding.viewPager.offscreenPageLimit = 2
         dataBinding.viewPager.adapter = object : FragmentPagerAdapter(supportFragmentManager) {
             override fun getItem(position: Int): Fragment {
                 return fragments[position]
@@ -39,10 +55,29 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun getPageTitle(position: Int): CharSequence? {
-                return strArrays[position]
+                return channelsBean.showapiResBody.channelList[position].name
             }
         }
+        dataBinding.tabLayout.tabMode = TabLayout.MODE_SCROLLABLE
         dataBinding.tabLayout.setupWithViewPager(dataBinding.viewPager)
 
     }
+
+    private fun initData() {
+        loadSir.showCallback(LoadingCallback::class.java)
+        NetWorkApi.getInstance().getChannels(object : CommonCallback<NewsChannelsBean> {
+            override fun onSuccess(data: NewsChannelsBean) {
+                Log.e(tag, "get channels data NewsChannelsBean = $data")
+                loadSir.showSuccess()
+                loadViews(data)
+            }
+
+            override fun onError(error: String?) {
+                Log.e(tag, "get channels data onError = $error")
+                loadSir.showCallback(ErrorCallback::class.java)
+            }
+        })
+    }
+
+
 }
