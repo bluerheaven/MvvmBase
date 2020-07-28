@@ -1,6 +1,7 @@
 package com.example.myapplication.views.news
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -44,7 +45,7 @@ class NewsListFragment : Fragment() {
         viewDataBinding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_news, container, false)
         initParameters()
-        adapter = NewsListAdapter()
+        adapter = NewsListAdapter(activity!!)
         viewDataBinding.recyclerView.adapter = adapter
         loadData()
         return root
@@ -61,7 +62,8 @@ class NewsListFragment : Fragment() {
         NetWorkApi.getInstance()
             .getNewsList(mChannelId, mChannelName, 1, object : CommonCallback<NewsListBean> {
                 override fun onSuccess(data: NewsListBean) {
-                    adapter.setItems(data.Contentlist())
+                    Log.e(tag, "get channel data NewsListBean = $data")
+                    adapter.setItems(data.showapiResBody.pagebean.contentlist)
                 }
 
                 override fun onError(error: String?) {

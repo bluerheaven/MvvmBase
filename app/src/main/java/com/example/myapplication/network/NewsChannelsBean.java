@@ -14,15 +14,6 @@ public class NewsChannelsBean extends TecentBaseResponse {
     @Expose
     public ShowapiResBody showapiResBody;
 
-    public class ChannelList {
-        @SerializedName("channelId")
-        @Expose
-        public String channelId;
-        @SerializedName("name")
-        @Expose
-        public String name;
-    }
-
     public class ShowapiResBody {
         @SerializedName("totalNum")
         @Expose
@@ -33,5 +24,14 @@ public class NewsChannelsBean extends TecentBaseResponse {
         @SerializedName("channelList")
         @Expose
         public List<ChannelList> channelList = null;
+    }
+
+    public class ChannelList {
+        @SerializedName("channelId")
+        @Expose
+        public String channelId;
+        @SerializedName("name")
+        @Expose
+        public String name;
     }
 }

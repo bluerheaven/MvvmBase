@@ -29,9 +29,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         dataBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         loadSir = LoadSir.getDefault().register(this) {
-            TODO("Not yet implemented")
+            loadData()
         }
-        initData()
+        loadData()
     }
 
     private fun loadViews(channelsBean: NewsChannelsBean) {
@@ -42,8 +42,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         val fragments = mutableListOf<Fragment>()
-        for (str in 0 until size) {
-            fragments.add(NewsListFragment.newInstance())
+        for (bean in channelsBean.showapiResBody.channelList) {
+            fragments.add(NewsListFragment.newInstance(bean.channelId, bean.name))
         }
         dataBinding.viewPager.offscreenPageLimit = 2
         dataBinding.viewPager.adapter = object : FragmentPagerAdapter(supportFragmentManager) {
@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun initData() {
+    private fun loadData() {
         loadSir.showCallback(LoadingCallback::class.java)
         NetWorkApi.getInstance().getChannels(object : CommonCallback<NewsChannelsBean> {
             override fun onSuccess(data: NewsChannelsBean) {

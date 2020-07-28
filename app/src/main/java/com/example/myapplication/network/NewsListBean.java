@@ -10,6 +10,39 @@ import java.util.List;
  * 保留所有版权，未经允许请不要分享到互联网和其他人
  */
 public class NewsListBean extends TecentBaseResponse {
+    @SerializedName("showapi_res_body")
+    @Expose
+    public ShowapiResBody showapiResBody;
+
+    public class ShowapiResBody {
+
+        @SerializedName("ret_code")
+        @Expose
+        public Integer retCode;
+        @SerializedName("pagebean")
+        @Expose
+        public Pagebean pagebean;
+    }
+
+    public class Pagebean {
+
+        @SerializedName("allPages")
+        @Expose
+        public Integer allPages;
+        @SerializedName("contentlist")
+        @Expose
+        public List<Contentlist> contentlist = null;
+        @SerializedName("currentPage")
+        @Expose
+        public Integer currentPage;
+        @SerializedName("allNum")
+        @Expose
+        public Integer allNum;
+        @SerializedName("maxResult")
+        @Expose
+        public Integer maxResult;
+    }
+
     public class Contentlist {
         @SerializedName("allList")
         @Expose
@@ -43,29 +76,6 @@ public class NewsListBean extends TecentBaseResponse {
         public String link;
     }
 
-    @SerializedName("showapi_res_body")
-    @Expose
-    public ShowapiResBody showapiResBody;
-
-    public class Pagebean {
-
-        @SerializedName("allPages")
-        @Expose
-        public Integer allPages;
-        @SerializedName("contentlist")
-        @Expose
-        public List<Contentlist> contentlist = null;
-        @SerializedName("currentPage")
-        @Expose
-        public Integer currentPage;
-        @SerializedName("allNum")
-        @Expose
-        public Integer allNum;
-        @SerializedName("maxResult")
-        @Expose
-        public Integer maxResult;
-    }
-
     public class ImageUrl {
 
         @SerializedName("height")
@@ -80,13 +90,4 @@ public class NewsListBean extends TecentBaseResponse {
         public String url;
     }
 
-    public class ShowapiResBody {
-
-        @SerializedName("ret_code")
-        @Expose
-        public Integer retCode;
-        @SerializedName("pagebean")
-        @Expose
-        public Pagebean pagebean;
-    }
 }
